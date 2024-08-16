@@ -8,7 +8,93 @@ import sys
 
 
 def main(args):
+    if not args.files:
+        if args.n:
+            i = 1
+            while True:
+                try:
+                    line = input()
+                    print(f"        {i} {line}")
+                    i+=1
+                except EOFError:
+                    break
+        elif args.b:
+            i = 1
+            while True:
+                try:
+                    line = input()
+                    if line:
+                        print(f"        {i} {line}")
+                        i+=1
+                except EOFError:
+                    break
+        else:
+            while True:
+                try:
+                    line = input()
+                    print(line)
+                except EOFError:
+                    break
+    else:
+        for arg in args.files:
+            if arg == '-':
+                if args.n:
+                    i = 1
+                    while True:
+                        try:
+                            line = input()
+                            print(f"        {i} {line}")
+                            i+=1
+                        except EOFError:
+                            break
+                    pass
+                elif args.b:
+                    i = 1
+                    while True:
+                        try:
+                            line = input()
+                            if line:
+                                print(f"        {i} {line}")
+                                i+=1
+                            pass
+                        except EOFError:
+                            break
+                    pass
+                else:
+                    while True:
+                        try:
+                            line = input()
+                            print(line)
+                        except EOFError:
+                            break
+                    pass
+            else:
+                try:
+                    with open(arg) as file:
+                        if args.n:
+                            i = 1
+                            for line in file:
+                                print(f"        {i} {line}")
+                                i+=1
+                            pass
+                        elif args.b:  
+                            i = 1
+                            for line in file:
+                                if line != '\n':
+                                    print(f"        {i} {line}")
+                                    i   +=1
+                            pass
 
+                        else:
+                            content = file.read()
+                            if content:
+                                print(f"{content}")
+                            pass
+                        
+                except (Exception,FileNotFoundError, EOFError) as e:
+                    print(f"    error: {e}")
+                    sys.exit(1)
+                
     pass
 
 def argsSetup():
@@ -40,15 +126,8 @@ def argsSetup():
         action='store_true',
         help="  --  run TEST SUITE"
     )
+    
     args = parser.parse_args()
-    
-    # check for standard input error
-    if args.files.count('-') > 1:
-        parser.error("  --  too many '-' symbols used")
-    
-    # check for file provided if flag provided
-    if (args.n or args.b) and not args.files:
-        parser.error("  --  must provide file(s) with flag ' -n or '-b'")
     
     return args
 
